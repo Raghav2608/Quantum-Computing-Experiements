@@ -16,7 +16,7 @@ def create_block_encoding(A) -> QuantumCircuit:
     encode_reg = QuantumRegister(n_reg,name='q')
     cl_reg = ClassicalRegister(n_ancilla)
     
-    qc  = QuantumCircuit(encode_reg,ctrl_reg,cl_reg)
+    qc  = QuantumCircuit(encode_reg,ctrl_reg)
     qc.prepare_state(ψ,encode_reg)
     qc.prepare_state(padded_amps,ctrl_reg)
 
@@ -29,10 +29,12 @@ def create_block_encoding(A) -> QuantumCircuit:
     qc.draw("mpl")
     return qc
 
-def multiply_block_encoding(A: QuantumCircuit,B:QuantumCircuit):
-    qc = QuantumCircuit(A.num_qubits + B.num_qubits)
+def multiply_block_encoding(A: QuantumCircuit,B:QuantumCircuit) -> QuantumCircuit:
+    max_qubits = max(A.num_qubits,B.num_qubits)
+    reg = QuantumRegister(max_qubits)
+    qc = QuantumCircuit(reg)
     qc.append(A.to_instruction(),qc.qubits[:A.num_qubits])
-    qc.append(B.to_instruction(),qc.qubits[A.num_qubits:])
+    qc.append(B.to_instruction(),qc.qubits[:B.num_qubits])
     return qc
 
 
